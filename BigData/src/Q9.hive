@@ -1,0 +1,3 @@
+add jar /home/004/a/ax/axr120931/HW3/hive_udf_axr120931.jar;
+CREATE TEMPORARY FUNCTION format_genre as 'FORMAT_GENRE_HIVE';
+select movieid, moviename,format_genre(genre) from movies;

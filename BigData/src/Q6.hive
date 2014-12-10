@@ -1,0 +1,13 @@
+drop table movies;
+drop table ratings;
+drop table users;
+
+CREATE TABLE movies (movieid string, moviename string, genre string) ROW FORMAT DELIMITED FIELDS TERMINATED BY "#" LINES TERMINATED BY "\n";
+CREATE TABLE ratings (userid string,movieid string,rating float,time_stamp timestamp) ROW FORMAT DELIMITED FIELDS TERMINATED BY "#" LINES TERMINATED BY "\n";
+CREATE TABLE users (userid string, gender string, age int, occ string,zipcode string) ROW FORMAT DELIMITED FIELDS TERMINATED BY "#" LINES TERMINATED BY "\n";
+
+LOAD DATA LOCAL INPATH "/tmp/Fall2014_HW-3_Hive/movies_new.dat" INTO TABLE movies;
+LOAD DATA LOCAL INPATH "/tmp/Fall2014_HW-3_Hive/ratings_new.dat" INTO TABLE ratings;
+LOAD DATA LOCAL INPATH "/tmp/Fall2014_HW-3_Hive/users_new.dat" INTO TABLE users;
+
+SELECT m.movieid, m.moviename, m.genre, t.avg FROM (SELECT r.movieid AS movieid, AVG(r.rating) AS avg FROM users u JOIN ratings r ON u.userid = r.userid WHERE u.gender = "M" GROUP BY r.movieid HAVING (avg >=4.4 AND avg <=4.9)) t JOIN movies m ON t.movieid = m.movieid WHERE m.genre LIKE "%Action%" OR m.genre LIKE "%Drama%";
